@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react'
+import {Transition} from 'react-transition-group'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
@@ -31,7 +32,17 @@ export default class BeforeAfterSlider extends Component {
   }
 
   state = {
-    progress: this.props.defaultProgress
+    progress: this.props.defaultProgress,
+    transitionIn: false
+  }
+
+  onMouseLeave () {
+    this.setState({transitionIn: true})
+  }
+
+  onMouseEnter () {
+
+    this.setState({transitionIn: false})
   }
 
   render() {
@@ -53,6 +64,24 @@ export default class BeforeAfterSlider extends Component {
       progress
     } = this.state
 
+    const defaultAfterStyle = {
+      width: `${100 * this.state.progress}%`,
+    }
+
+    const transitionAfterStyles = {
+      entering: {width: `${100 * this.state.progress}%`},
+      entered: {width: this.state.progress < .5 ? 0 : '100%', transition: '300ms'}
+    }
+
+    const defaultLineStyle = {
+      left: `${100 * progress}%`
+    }
+
+    const transitionLineStyles = {
+      entering: {left: `${100 * progress}%`},
+      entered: {left: this.state.progress < .5 ? 0 : '100%', transition: '300ms'}
+    }
+
     return (
       <div
         className={classNames(styles.container, className)}
@@ -61,20 +90,26 @@ export default class BeforeAfterSlider extends Component {
           height
         }}
         {...rest}
+        onMouseLeave={this.onMouseLeave.bind(this)}
+        onMouseEnter={this.onMouseEnter.bind(this)}
       >
-        <div
-          className={styles.afterWrapper}
-          style={{
-            width: `${100 * progress}%`
-          }}
-        >
-          <BlockImage
-            src={after}
-            className={classNames(styles.after, afterClassName)}
-            style={{ width }}
-            {...afterProps}
-          />
-        </div>
+      <Transition in={this.state.transitionIn} timeout={300}>
+        {(state) => {
+          return (
+            <div
+              className={styles.afterWrapper}
+              style={{...defaultAfterStyle, ...transitionAfterStyles[state]}}
+            >
+              <BlockImage
+                src={after}
+                className={classNames(styles.after, afterClassName)}
+                style={{ width }}
+                {...afterProps}
+              />
+            </div>
+          )
+        }}
+      </Transition>
 
         <BlockImage
           src={before}
@@ -82,12 +117,21 @@ export default class BeforeAfterSlider extends Component {
           {...beforeProps}
         />
 
-        <div
-          className={styles.handle}
-          style={{
-            left: `${100 * progress}%`
-          }}
-        />
+        <Transition in={this.state.transitionIn} timeout={300}>
+        {
+          (state) => {
+            return (
+              <div
+                className={styles.handle}
+                style={{
+                  ...defaultLineStyle, ...transitionLineStyles[state]
+                }}
+              />
+            )
+          }
+        }
+
+        </Transition>
 
         <div
           className={styles.wrapper}
