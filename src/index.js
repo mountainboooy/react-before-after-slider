@@ -3,7 +3,6 @@
  */
 
 import React, { Component } from 'react'
-import {Transition} from 'react-transition-group'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
@@ -22,27 +21,28 @@ export default class BeforeAfterSlider extends Component {
     beforeClassName: PropTypes.string,
     afterClassName: PropTypes.string,
     beforeProps: PropTypes.object,
-    afterProps: PropTypes.object
+    afterProps: PropTypes.object,
+    unfocusAnimationDuration: PropTypes.number
   }
 
   static defaultProps = {
     defaultProgress: 0.5,
     beforeProps: { },
-    afterProps: { }
+    afterProps: { },
+    unfocusAnimationDuration: 300
   }
 
   state = {
     progress: this.props.defaultProgress,
-    transitionIn: false
+    focused: true
   }
 
   onMouseLeave () {
-    this.setState({transitionIn: true})
+    this.setState({focused: false})
   }
 
   onMouseEnter () {
-
-    this.setState({transitionIn: false})
+    this.setState({focused: true})
   }
 
   render() {
@@ -64,22 +64,22 @@ export default class BeforeAfterSlider extends Component {
       progress
     } = this.state
 
-    const defaultAfterStyle = {
+    const afterImageFocusedStyle = {
       width: `${100 * this.state.progress}%`,
     }
 
-    const transitionAfterStyles = {
-      entering: {width: `${100 * this.state.progress}%`},
-      entered: {width: this.state.progress < .5 ? 0 : '100%', transition: '300ms'}
+    const afterImageUnfocusedStyle = {
+      width: this.state.progress < .5 ? 0 : '100%',
+      transition: `${this.props.unfocusAnimationDuration}ms`
     }
 
-    const defaultLineStyle = {
+    const lineFocusedStyle = {
       left: `${100 * progress}%`
     }
 
-    const transitionLineStyles = {
-      entering: {left: `${100 * progress}%`},
-      entered: {left: this.state.progress < .5 ? 0 : '100%', transition: '300ms'}
+    const lineUnfocusedStyle = {
+      left: this.state.progress < .5 ? 0 : '100%',
+      transition: `${this.props.unfocusAnimationDuration}ms`
     }
 
     return (
@@ -93,59 +93,37 @@ export default class BeforeAfterSlider extends Component {
         onMouseLeave={this.onMouseLeave.bind(this)}
         onMouseEnter={this.onMouseEnter.bind(this)}
       >
-      <Transition in={this.state.transitionIn} timeout={300}>
-        {(state) => {
-          return (
-            <div
-              className={styles.afterWrapper}
-              style={{...defaultAfterStyle, ...transitionAfterStyles[state]}}
-            >
-              <BlockImage
-                src={after}
-                className={classNames(styles.after, afterClassName)}
-                style={{ width }}
-                {...afterProps}
-              />
-            </div>
-          )
-        }}
-      </Transition>
-
+        <div
+          className={styles.afterWrapper}
+          style={this.state.focused ? afterImageFocusedStyle : afterImageUnfocusedStyle}
+        >
+          <BlockImage
+            src={after}
+            className={classNames(styles.after, afterClassName)}
+            style={{ width }}
+            {...afterProps}
+          />
+        </div>
         <BlockImage
           src={before}
           className={classNames(styles.before, beforeClassName)}
           {...beforeProps}
         />
-
-        <Transition in={this.state.transitionIn} timeout={300}>
-        {
-          (state) => {
-            return (
-              <div
-                className={styles.handle}
-                style={{
-                  ...defaultLineStyle, ...transitionLineStyles[state]
-                }}
-              />
-            )
-          }
-        }
-
-        </Transition>
-
+        <div
+          className={styles.handle}
+          style={this.state.focused ? lineFocusedStyle : lineUnfocusedStyle}
+        />
         <div
           className={styles.wrapper}
           ref={this._contentRef}
           onTouchMove={this._onMoveWrapper}
           onMouseMove={this._onMoveWrapper}
         />
-
         <div
           className={styles.content}
           onTouchMove={this._onMoveContent}
           onMouseMove={this._onMoveContent}
         />
-
       </div>
     )
   }
