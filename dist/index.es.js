@@ -491,7 +491,7 @@ var BeforeAfterSlider = function (_Component) {
 
       var afterImageUnfocusedStyle = {
         width: this.state.progress < .5 ? 0 : '100%',
-        transition: this.props.unfocusAnimationDuration + 'ms'
+        transition: '300ms'
       };
 
       var lineFocusedStyle = {
@@ -500,7 +500,7 @@ var BeforeAfterSlider = function (_Component) {
 
       var lineUnfocusedStyle = {
         left: this.state.progress < .5 ? 0 : '100%',
-        transition: this.props.unfocusAnimationDuration + 'ms'
+        transition: '300ms'
       };
 
       return React.createElement(
@@ -562,14 +562,12 @@ BeforeAfterSlider.propTypes = {
   beforeClassName: PropTypes.string,
   afterClassName: PropTypes.string,
   beforeProps: PropTypes.object,
-  afterProps: PropTypes.object,
-  unfocusAnimationDuration: PropTypes.number
+  afterProps: PropTypes.object
 };
 BeforeAfterSlider.defaultProps = {
   defaultProgress: 0.5,
   beforeProps: {},
-  afterProps: {},
-  unfocusAnimationDuration: 300
+  afterProps: {}
 };
 
 export default BeforeAfterSlider;

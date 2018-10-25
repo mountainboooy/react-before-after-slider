@@ -21,15 +21,13 @@ export default class BeforeAfterSlider extends Component {
     beforeClassName: PropTypes.string,
     afterClassName: PropTypes.string,
     beforeProps: PropTypes.object,
-    afterProps: PropTypes.object,
-    unfocusAnimationDuration: PropTypes.number
+    afterProps: PropTypes.object
   }
 
   static defaultProps = {
     defaultProgress: 0.5,
     beforeProps: { },
-    afterProps: { },
-    unfocusAnimationDuration: 300
+    afterProps: { }
   }
 
   state = {
@@ -70,7 +68,7 @@ export default class BeforeAfterSlider extends Component {
 
     const afterImageUnfocusedStyle = {
       width: this.state.progress < .5 ? 0 : '100%',
-      transition: `${this.props.unfocusAnimationDuration}ms`
+      transition: '300ms'
     }
 
     const lineFocusedStyle = {
@@ -79,7 +77,7 @@ export default class BeforeAfterSlider extends Component {
 
     const lineUnfocusedStyle = {
       left: this.state.progress < .5 ? 0 : '100%',
-      transition: `${this.props.unfocusAnimationDuration}ms`
+      transition: '300ms'
     }
 
     return (
