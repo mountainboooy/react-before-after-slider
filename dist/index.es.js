@@ -441,6 +441,11 @@ var BeforeAfterSlider = function (_Component) {
       var width = _this.props.width;
 
       var progress = Math.max(0, Math.min(1, (offsetX - width / 10) / width));
+      if (progress > .5 && _this.state.progress <= .5 && _this.props.onAfter) {
+        _this.props.onAfter();
+      } else if (progress <= .5 && _this.state.progress > .5 && _this.props.onBefore) {
+        _this.props.onBefore();
+      }
       _this.setState({ progress: progress });
     }, _this._onMoveContent = function (event) {
       event.preventDefault();
@@ -453,6 +458,11 @@ var BeforeAfterSlider = function (_Component) {
       var width = _this.props.width;
 
       var progress = Math.max(0, Math.min(1, offsetX / width));
+      if (progress > .5 && _this.state.progress <= .5 && _this.props.onAfter) {
+        _this.props.onAfter();
+      } else if (progress <= .5 && _this.state.progress > .5 && _this.props.onBefore) {
+        _this.props.onBefore();
+      }
       _this.setState({ progress: progress });
     }, _temp), possibleConstructorReturn$1(_this, _ret);
   }
@@ -562,7 +572,9 @@ BeforeAfterSlider.propTypes = {
   beforeClassName: PropTypes.string,
   afterClassName: PropTypes.string,
   beforeProps: PropTypes.object,
-  afterProps: PropTypes.object
+  afterProps: PropTypes.object,
+  onBefore: PropTypes.func,
+  onAfter: PropTypes.func
 };
 BeforeAfterSlider.defaultProps = {
   defaultProgress: 0.5,

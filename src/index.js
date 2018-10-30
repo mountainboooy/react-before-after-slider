@@ -21,7 +21,9 @@ export default class BeforeAfterSlider extends Component {
     beforeClassName: PropTypes.string,
     afterClassName: PropTypes.string,
     beforeProps: PropTypes.object,
-    afterProps: PropTypes.object
+    afterProps: PropTypes.object,
+    onBefore: PropTypes.func,
+    onAfter: PropTypes.func
   }
 
   static defaultProps = {
@@ -139,6 +141,11 @@ export default class BeforeAfterSlider extends Component {
     }
     const { width } = this.props
     const progress = Math.max(0, Math.min(1, (offsetX - width / 10) / width))
+    if (progress > .5 && this.state.progress <= .5 && this.props.onAfter) {
+      this.props.onAfter()
+    } else if (progress <= .5 && this.state.progress > .5 && this.props.onBefore) {
+      this.props.onBefore()
+    }
     this.setState({ progress })
   }
 
@@ -151,6 +158,11 @@ export default class BeforeAfterSlider extends Component {
     }
     const { width } = this.props
     const progress = Math.max(0, Math.min(1, offsetX / width))
+    if (progress > .5 && this.state.progress <= .5 && this.props.onAfter) {
+      this.props.onAfter()
+    } else if (progress <= .5 && this.state.progress > .5 && this.props.onBefore) {
+      this.props.onBefore()
+    }
     this.setState({ progress })
   }
 }
